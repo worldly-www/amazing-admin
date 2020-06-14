@@ -22,3 +22,5 @@ export function loadVideo(src: string) {
     }
   })
 }
+
+export * from './getMatchMenu';

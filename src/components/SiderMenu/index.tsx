@@ -1,30 +1,47 @@
-import React, { SFC } from 'react';
+import React, { FC } from 'react';
+import { IRoute } from 'umi';
 import { Layout, Menu } from 'antd';
 
 const { Sider } = Layout;
 const { SubMenu, Item } = Menu;
 
-const SiderMenu: SFC<{}> = () => (
-  <Sider
-    width={200}
-    theme="light"
-  >
-    <Menu
-      mode="inline"
-      style={{height: '100vh'}}
-      defaultSelectedKeys={['2']}
+function renderItem (routes: Array<IRoute> = []) {
+  return routes.map(({ name, path, routes: subRoutes }) => {
+    if (Array.isArray(subRoutes) && subRoutes.length) {
+      return (
+        <SubMenu
+          key={path}
+          title={name}
+        >
+          {renderItem(subRoutes)}
+        </SubMenu>
+      )
+    }
+    return <Item key={path}>{name}</Item>;
+  });
+}
+
+interface ISiderMenuProps {
+  routes?: Array<IRoute>
+}
+
+const SiderMenu: FC<ISiderMenuProps> = ({
+  routes,
+}) => {
+  return (
+    <Sider
+      width={200}
+      theme="light"
     >
-      <SubMenu
-          key="sub1"
-          title="subnav 1"
+      <Menu
+        mode="inline"
+        style={{ height: '100vh' }}
+        defaultSelectedKeys={['2']}
       >
-        <Item key="1">option1</Item>
-        <Item key="2">option2</Item>
-        <Item key="3">option3</Item>
-        <Item key="4">option4</Item>
-      </SubMenu>
-    </Menu>
-  </Sider>
-);
+        {renderItem(routes)}
+      </Menu>
+    </Sider>
+  )
+};
 
 export default SiderMenu;
