@@ -7,6 +7,6 @@ export interface MenuDataItem {
   icon?: React.ReactNode;
   name?: string;
   key?: string;
-  path?: string;
+  path: string;
   [key: string]: any;
 }

@@ -1,9 +1,12 @@
+import { IRoute } from 'umi';
 import { pathToRegexp } from 'path-to-regexp';
-import { Route } from '../types';
 
-export function getMatchMenuData (pathname: string, menuData: Array<Route> = []) {
+export function getMatchMenuData(
+  pathname: string,
+  menuData: Array<IRoute> = [],
+) {
   return menuData.filter(({ path }) => {
-    return pathname === path || pathToRegexp(`${path}/(.*)`).test(pathname)
+    return pathname === path || pathToRegexp(`${path}/(.*)`).test(pathname);
   });
 }
 

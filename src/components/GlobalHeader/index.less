@@ -1,9 +1,32 @@
-.global-header{
-  .logo {
-    width: 120px;
-    height: 31px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 16px 28px 16px 0;
-    float: left;
+@import '../../style/_variable.less';
+
+.global-header {
+  height: 48px;
+  line-height: 48px;
+  z-index: 10;
+  background: #fff;
+  padding: 0 24px;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  .trigger {
+    font-size: 18px;
+    &:hover {
+      color: @primary-color;
+    }
+  }
+  .content {
+    float: right;
+    .action {
+      cursor: pointer;
+      padding: 0 12px;
+      &:hover {
+        background: rgba(0, 0, 0, 0.025);
+      }
+    }
+  }
+  .account {
+    &__name {
+      margin-left: 8px;
+      vertical-align: middle;
+    }
   }
 }

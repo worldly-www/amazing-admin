@@ -1,34 +1,35 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement, useState, useCallback } from 'react';
 import { Link, IRoute } from 'umi';
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import Avatar from './Avatar';
 import './index.less';
 
 const { Header } = Layout;
 
 type GlobalHeaderProps = {
-  title?: string | ReactElement;
-  selectedKeys: Array<string>;
-  routes: Array<IRoute>;
+  onChange?: (collapsed: boolean) => void;
 };
 
-const GlobalHeader: FC<GlobalHeaderProps> = ({
-  routes = [],
-  selectedKeys = []
-}) => {
+const GlobalHeader: FC<GlobalHeaderProps> = ({ onChange }) => {
+  const [state, setState] = useState(false);
+  const handleToggle = useCallback(() => {
+    const collapsed = !state;
+    setState(collapsed);
+    if (onChange) {
+      onChange(collapsed);
+    }
+  }, [state, onChange]);
+
   return (
     <Header className="global-header">
-      <h1 className="logo">
-        <img src="" alt=""/>
-      </h1>
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        selectedKeys={selectedKeys}
-      >
-        {routes.map(({ name, path }) => (
-          <Menu.Item key={path}><Link to={path as string}>{name}</Link></Menu.Item>
-        ))}
-      </Menu>
+      {React.createElement(state ? MenuUnfoldOutlined : MenuFoldOutlined, {
+        className: 'trigger',
+        onClick: handleToggle,
+      })}
+      <div className="content">
+        <Avatar />
+      </div>
     </Header>
   );
 };

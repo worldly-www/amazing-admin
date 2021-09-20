@@ -2,13 +2,21 @@ export function loadImage(src: string) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
     image.src = src;
-    image.addEventListener('load', () => {
-      resolve(image);
-    }, false);
-    image.addEventListener('error', (e) => {
-      reject(e);
-    }, false);
-  })
+    image.addEventListener(
+      'load',
+      () => {
+        resolve(image);
+      },
+      false,
+    );
+    image.addEventListener(
+      'error',
+      e => {
+        reject(e);
+      },
+      false,
+    );
+  });
 }
 
 export function loadVideo(src: string) {
@@ -20,7 +28,8 @@ export function loadVideo(src: string) {
     } else {
       reject();
     }
-  })
+  });
 }
 
-export * from './getMatchMenu';
+export { default as findRoute } from './findRoute';
+export { default as objectToArray } from './objectToArray';
