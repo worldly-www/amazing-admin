@@ -5,6 +5,10 @@ export default [
   },
   {
     path: '/',
+    redirect: '/user/index',
+  },
+  {
+    path: '/',
     component: '../layouts/Basic',
     routes: [
       {

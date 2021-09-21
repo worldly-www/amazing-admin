@@ -1,36 +1,121 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo, useCallback } from 'react';
 import { Button, Modal } from 'antd';
-import ProTable from '@/components/ProTable';
+import { ProForm, ProTable } from '@/components';
 import { useFetch, useBoolean } from '@/hooks';
-import { columns } from './constant';
+import { columns, items, levelItems } from './constant';
+
+const { useForm } = ProForm;
 
 const SettingLevel: FC = ({}) => {
+  const [form] = useForm();
+  const [state, setState] = useState<Record<string, any> | null>(null);
   const [visible, toggle] = useBoolean(false);
-  const [[list]] = useFetch({
+
+  const [[list, loading], fetchList] = useFetch({
     url: '/GameLeveConfig/GetGameLeveConfigList',
-    method: 'POST',
   });
 
-  const [, handleSubmit] = useFetch(
+  const [[, submitLoading], submitLevel] = useFetch(
     {
       url: '/GameLeveConfig/AddGameLeveConfig',
       method: 'POST',
     },
     {
       manual: true,
-      onSuccess(result) {
-        console.log(result);
+      onSuccess() {
+        toggle(false);
       },
     },
   );
 
+  const [[, editLoading], editLevel] = useFetch(
+    {
+      url: '/GameGiftConfig/EditGameGiftConfig',
+      method: 'POST',
+    },
+    {
+      manual: true,
+      onSuccess() {
+        setState(null);
+        toggle(false);
+      },
+    },
+  );
+
+  const levelColumns = useMemo(() => {
+    return columns.concat([
+      {
+        title: '操作',
+        width: 160,
+        render(record: any) {
+          const { ID } = record;
+          const handleEdit = () => {
+            setState(record);
+            toggle(true);
+          };
+          return (
+            <>
+              <Button type="primary" size="small" onClick={handleEdit}>
+                编辑
+              </Button>
+              <Button style={{ marginLeft: 8 }} size="small" danger>
+                删除
+              </Button>
+            </>
+          );
+        },
+      },
+    ]);
+  }, [setState, toggle]);
+
+  const handleSubmit = useCallback(async () => {
+    const values = await form.validateFields();
+    Object.keys(values).forEach(key => {
+      values[key] = values[key] - 0;
+    });
+    if (state) {
+      await editLevel({
+        ...state,
+        ...values,
+      });
+    } else {
+      await submitLevel(values);
+    }
+    fetchList();
+  }, [form, state, fetchList, editLevel, submitLevel]);
+
+  const handleCancel = useCallback(() => {
+    toggle(false);
+    form.resetFields();
+  }, [toggle]);
+
   return (
     <div>
-      <Button type="primary" onClick={toggle}>
+      <ProForm items={items} layout="inline" onFinish={fetchList}>
+        <Button type="primary" htmlType="submit">
+          查询
+        </Button>
+      </ProForm>
+      <Button type="primary" onClick={toggle} style={{ margin: '12px 0' }}>
         新增关卡
       </Button>
-      <ProTable align="center" columns={columns} dataSource={list} />
-      <Modal visible={visible} title="新增关卡" onCancel={toggle}></Modal>
+      <ProTable
+        rowKey="ID"
+        loading={loading}
+        align="center"
+        columns={levelColumns}
+        dataSource={list}
+      />
+      <Modal
+        destroyOnClose
+        visible={visible}
+        title="新增关卡"
+        onCancel={handleCancel}
+        onOk={handleSubmit}
+        confirmLoading={submitLoading || editLoading}
+      >
+        <ProForm form={form} items={levelItems} initialValues={state || {}} />
+      </Modal>
     </div>
   );
 };

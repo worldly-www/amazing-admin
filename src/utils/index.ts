@@ -31,5 +31,7 @@ export function loadVideo(src: string) {
   });
 }
 
+export * from './utils';
+export * from './time';
 export { default as findRoute } from './findRoute';
 export { default as objectToArray } from './objectToArray';

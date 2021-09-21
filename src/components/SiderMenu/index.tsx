@@ -47,12 +47,7 @@ const SiderMenu: FC<ISiderMenuProps> = ({
       <h1 className="logo">
         <img src="" alt="" />
       </h1>
-      <Menu
-        theme="dark"
-        mode="inline"
-        style={{ height: '100vh' }}
-        selectedKeys={selectedKeys}
-      >
+      <Menu theme="dark" mode="inline" selectedKeys={selectedKeys}>
         {renderItem(routes)}
       </Menu>
     </Sider>

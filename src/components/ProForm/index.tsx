@@ -1,16 +1,28 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { Form } from 'antd';
-import { FormProps, FormItemProps } from 'antd/es/form';
-import { TableProps } from 'antd/es/table';
+import { FormProps } from 'antd/es/form';
+import Item, { IItemProps } from './Item';
 
-const FormItem = Form.Item;
-
-interface IProFormProps extends FormProps {
-  items: Array<FormItemProps>;
+const { useForm } = Form;
+export interface IProFormProps extends FormProps {
+  items: Array<IItemProps>;
 }
 
-const ProForm: FC<IProFormProps> = () => {
-  return <Form></Form>;
+type ProFormType = FC<IProFormProps> & {
+  useForm: typeof useForm;
 };
+
+const ProForm: ProFormType = ({ items, children, ...restProps }) => {
+  return (
+    <Form {...restProps}>
+      {items.map((item, index) => (
+        <Item {...item} key={`${item.name}::${index}`} />
+      ))}
+      {children}
+    </Form>
+  );
+};
+
+ProForm.useForm = useForm;
 
 export default ProForm;

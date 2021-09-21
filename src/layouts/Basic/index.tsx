@@ -39,7 +39,7 @@ const BasicLayout: FC<IRouteComponentProps> = ({
       />
       <Layout>
         <GlobalHeader onChange={handleCollapsed} />
-        <Content>
+        <Content style={{ overflow: 'auto' }}>
           <PageHeader className="layout-header" title={curRouteInfo.name} />
           <div className="layout-content">{children}</div>
         </Content>

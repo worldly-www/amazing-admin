@@ -1,7 +1,14 @@
 import { extend } from 'umi-request';
 import { message } from 'antd';
+import { history } from 'umi';
 
-function errorHandler(error) {}
+export interface IFetchResponse<T> {
+  code: number;
+  Code: number;
+  Data: T;
+  data: T;
+  Message: string;
+}
 
 const request = extend({
   prefix: '/api',
@@ -10,6 +17,10 @@ const request = extend({
     Accept: '*',
   },
   errorHandler(error) {
+    const { status } = error.response;
+    if (status === 401) {
+      history.push('/login');
+    }
     throw error;
   },
 });
