@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 
 type useBooleanReturnType = [boolean, (value: any) => void];
 
-function useBoolean(initialState: boolean): useBooleanReturnType {
+function useBoolean(initialState: boolean = false): useBooleanReturnType {
   const [state, setState] = useState(initialState);
 
   const toggle = useCallback(

@@ -4,6 +4,7 @@ import request, { IFetchResponse } from '@/utils/request';
 import { isPlainObject } from 'lodash';
 interface IFetchOptions<ResultType = any, F = any> {
   manual?: boolean;
+  refreshDeps?: any[];
   formatResult?: <F>(response: IFetchResponse<ResultType>) => F;
   onSuccess?: (response: ResultType) => void;
   onError?: (response: IFetchResponse<ResultType>) => void;
@@ -24,6 +25,7 @@ function serviceFn<S, ResultType>(
   service: S,
   ...args: any[]
 ): Promise<IFetchResponse<ResultType>> {
+  if (!service) return Promise.reject();
   if (typeof service === 'string') {
     const [params] = args;
     return request(service, {
