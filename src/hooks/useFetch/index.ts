@@ -14,7 +14,10 @@ type fetchServiceType =
   | RequestOptionsInit
   | (() => string | object | Promise<any>)
   | string;
-type fetchReturnType<T> = [[T | undefined, boolean], (...args: any[]) => void];
+type fetchReturnType<T> = [
+  [T | undefined, boolean],
+  (...args: any[]) => Promise<T>,
+];
 
 const defaultOptions = {
   manual: false,

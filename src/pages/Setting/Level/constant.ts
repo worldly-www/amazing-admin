@@ -14,6 +14,7 @@ export const columns = objectToArray(
   {
     Level: '关卡名称',
     GameTime: '通关时间',
+    GamePastScore: '过关分数',
   },
   {
     labelKey: 'dataIndex',
@@ -28,6 +29,10 @@ export const levelItems = objectToArray(
     },
     GameTime: {
       label: '通关时间',
+    },
+    GamePastScore: {
+      label: '过关分数',
+      type: 'inputnumber',
     },
   },
   {

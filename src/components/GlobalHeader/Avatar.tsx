@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
+import { history } from 'umi';
 import { Avatar, Dropdown, Menu } from 'antd';
 import {
   UserOutlined,
@@ -8,6 +9,11 @@ import {
 import './index.less';
 
 const AvatarDropdown: FC = () => {
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('token');
+    history.replace('/login');
+  }, []);
+
   const avatarMenu = (
     <Menu style={{ minWidth: 160 }}>
       <Menu.Item key="center">
@@ -19,7 +25,7 @@ const AvatarDropdown: FC = () => {
         个人设置
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="logout">
+      <Menu.Item key="logout" onClick={handleLogout}>
         <LogoutOutlined />
         退出登录
       </Menu.Item>

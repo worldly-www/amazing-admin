@@ -1,5 +1,5 @@
 import React, { FC, useState, useMemo, useCallback } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { ProForm, ProTable } from '@/components';
 import { useFetch, useBoolean } from '@/hooks';
 import { columns, items, levelItems } from './constant';
@@ -30,7 +30,7 @@ const SettingLevel: FC = ({}) => {
 
   const [[, editLoading], editLevel] = useFetch(
     {
-      url: '/GameGiftConfig/EditGameGiftConfig',
+      url: '/GameLeveConfig/EditGameLeveConfig',
       method: 'POST',
     },
     {
@@ -38,6 +38,19 @@ const SettingLevel: FC = ({}) => {
       onSuccess() {
         setState(null);
         toggle(false);
+      },
+    },
+  );
+
+  const [, deleteLevel] = useFetch(
+    {
+      url: '/GameLeveConfig//DeleteGameLeveConfig',
+      method: 'POST',
+    },
+    {
+      manual: true,
+      onSuccess() {
+        fetchList();
       },
     },
   );
@@ -53,12 +66,22 @@ const SettingLevel: FC = ({}) => {
             setState(record);
             toggle(true);
           };
+          const handleDelete = () => {
+            deleteLevel({ ID }).then(() => {
+              message.success('删除成功');
+            });
+          };
           return (
             <>
               <Button type="primary" size="small" onClick={handleEdit}>
                 编辑
               </Button>
-              <Button style={{ marginLeft: 8 }} size="small" danger>
+              <Button
+                style={{ marginLeft: 8 }}
+                size="small"
+                onClick={handleDelete}
+                danger
+              >
                 删除
               </Button>
             </>
@@ -66,7 +89,7 @@ const SettingLevel: FC = ({}) => {
         },
       },
     ]);
-  }, [setState, toggle]);
+  }, [setState, toggle, deleteLevel]);
 
   const handleSubmit = useCallback(async () => {
     const values = await form.validateFields();
@@ -86,6 +109,7 @@ const SettingLevel: FC = ({}) => {
 
   const handleCancel = useCallback(() => {
     toggle(false);
+    setState(null);
     form.resetFields();
   }, [toggle]);
 

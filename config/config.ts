@@ -3,6 +3,7 @@ import routes from './routes';
 
 export default defineConfig({
   base: '/admin',
+  publicPath: process.env.NODE_ENV === 'production' ? '/admin/' : '/',
   locale: {
     antd: true,
   },
