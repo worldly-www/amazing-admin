@@ -88,6 +88,7 @@ const UserList: FC = ({}) => {
   return (
     <div>
       <ProTable
+        rowKey="ID"
         loading={loading}
         align="center"
         columns={userColumns}

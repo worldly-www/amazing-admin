@@ -44,7 +44,7 @@ const SettingLevel: FC = ({}) => {
 
   const [, deleteLevel] = useFetch(
     {
-      url: '/GameLeveConfig//DeleteGameLeveConfig',
+      url: '/GameLeveConfig/DeleteGameLeveConfig',
       method: 'POST',
     },
     {
@@ -93,12 +93,9 @@ const SettingLevel: FC = ({}) => {
 
   const handleSubmit = useCallback(async () => {
     const values = await form.validateFields();
-    Object.keys(values).forEach(key => {
-      values[key] = values[key] - 0;
-    });
     if (state) {
       await editLevel({
-        ...state,
+        ID: state.ID,
         ...values,
       });
     } else {
