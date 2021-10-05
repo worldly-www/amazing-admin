@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import {
+  KeyOutlined,
   UserOutlined,
   SettingOutlined,
   DatabaseOutlined,
@@ -14,6 +15,7 @@ interface IconType {
 }
 
 const ICON_TYPE_ENUM: IconType = {
+  KeyOutlined,
   UserOutlined,
   SettingOutlined,
   DatabaseOutlined,

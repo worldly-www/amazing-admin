@@ -2,14 +2,14 @@ import React, { FC, useMemo, useState } from 'react';
 import { Button, Modal } from 'antd';
 import { ProForm, ProTable } from '@/components';
 import { useFetch, useBoolean } from '@/hooks';
-import { dateToUnit, dateToMoment } from '@/utils';
+import { dateToUnit, dateToMoment, pick } from '@/utils';
 import { columns, rewardItems } from './constant';
 
 const { useForm } = ProForm;
 
 const RewardList: FC = ({}) => {
   const [form] = useForm();
-  const [state, setState] = useState<Record<string, any> | null>(null);
+  const [editId, setEditId] = useState('');
   const [visible, toggle] = useBoolean(false);
 
   const [[list, loading], fetchList] = useFetch({
@@ -37,7 +37,7 @@ const RewardList: FC = ({}) => {
     {
       manual: true,
       onSuccess() {
-        setState(null);
+        setEditId('');
         toggle(false);
       },
     },
@@ -64,11 +64,11 @@ const RewardList: FC = ({}) => {
         render(record: any) {
           const { ID, StartTime, EndTime } = record;
           const handleEdit = () => {
-            setState({
-              ...record,
-              date: dateToMoment([StartTime, EndTime]),
-            });
+            const values = pick(record, ['GiftName', 'GiftNumner']);
+            values.date = dateToMoment([StartTime, EndTime]);
             toggle(true);
+            setEditId(ID);
+            form.setFieldsValue(values);
           };
           const handleDelete = () => {
             deleteReward({ ID });
@@ -91,15 +91,14 @@ const RewardList: FC = ({}) => {
         },
       },
     ]);
-  }, [deleteReward, setState, toggle]);
+  }, [deleteReward, setEditId, toggle]);
 
   const handleSubmit = async () => {
     const { date = [], ...restValues } = await form.validateFields();
     [restValues.StartTime, restValues.EndTime] = dateToUnit(date);
-    if (state) {
-      const { date, ...restState } = state;
+    if (editId) {
       await editReward({
-        ...restState,
+        ID: editId,
         ...restValues,
       });
     } else {
@@ -128,7 +127,7 @@ const RewardList: FC = ({}) => {
         onOk={handleSubmit}
         confirmLoading={submitLoading || editLoading}
       >
-        <ProForm form={form} items={rewardItems} initialValues={state || {}} />
+        <ProForm form={form} items={rewardItems} preserve={false} />
       </Modal>
     </div>
   );

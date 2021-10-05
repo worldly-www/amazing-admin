@@ -48,6 +48,18 @@ export default [
           },
         ],
       },
+      {
+        name: '加密配置',
+        path: 'secure',
+        icon: 'KeyOutlined',
+        routes: [
+          {
+            path: 'index',
+            name: '加密配置',
+            component: './Secure/Index',
+          },
+        ],
+      },
     ],
   },
 ];

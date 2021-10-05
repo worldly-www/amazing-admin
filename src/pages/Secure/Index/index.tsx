@@ -2,7 +2,7 @@ import React, { FC, useState, useMemo, useCallback } from 'react';
 import { Button, message, Modal } from 'antd';
 import { ProForm, ProTable } from '@/components';
 import { useFetch, useBoolean } from '@/hooks';
-import { columns, items, levelItems } from './constant';
+import { columns, items } from './constant';
 import { pick } from '@/utils';
 
 const { useForm } = ProForm;
@@ -12,13 +12,20 @@ const SettingLevel: FC = ({}) => {
   const [editId, setEditId] = useState('');
   const [visible, toggle] = useBoolean(false);
 
-  const [[list, loading], fetchList] = useFetch({
-    url: '/GameLeveConfig/GetGameLeveConfigList',
-  });
-
-  const [[, submitLoading], submitLevel] = useFetch(
+  const [[list, loading], fetchList] = useFetch(
     {
-      url: '/GameLeveConfig/AddGameLeveConfig',
+      url: '/GameSignKeyConfig/GetSignKeyConfig',
+    },
+    {
+      formatResult(result) {
+        return [result.Data];
+      },
+    },
+  );
+
+  const [[, submitLoading], submitKey] = useFetch(
+    {
+      url: '/GameSignKeyConfig/AddSignKeyConfig',
       method: 'POST',
     },
     {
@@ -29,9 +36,9 @@ const SettingLevel: FC = ({}) => {
     },
   );
 
-  const [[, editLoading], editLevel] = useFetch(
+  const [[, editLoading], editKey] = useFetch(
     {
-      url: '/GameLeveConfig/EditGameLeveConfig',
+      url: '/GameSignKeyConfig/EditSignKeyConfig',
       method: 'POST',
     },
     {
@@ -39,19 +46,6 @@ const SettingLevel: FC = ({}) => {
       onSuccess() {
         setEditId('');
         toggle(false);
-      },
-    },
-  );
-
-  const [, deleteLevel] = useFetch(
-    {
-      url: '/GameLeveConfig/DeleteGameLeveConfig',
-      method: 'POST',
-    },
-    {
-      manual: true,
-      onSuccess() {
-        fetchList();
       },
     },
   );
@@ -64,52 +58,35 @@ const SettingLevel: FC = ({}) => {
         render(record: any) {
           const { ID } = record;
           const handleEdit = () => {
-            const values = pick(record, [
-              'GameName',
-              'GameTime',
-              'GamePastScore',
-            ]);
+            const values = pick(record, ['Key']);
             toggle(true);
             setEditId(ID);
             form.setFieldsValue(values);
           };
-          const handleDelete = () => {
-            deleteLevel({ ID }).then(() => {
-              message.success('删除成功');
-            });
-          };
           return (
             <>
               <Button type="primary" size="small" onClick={handleEdit}>
-                编辑
-              </Button>
-              <Button
-                style={{ marginLeft: 8 }}
-                size="small"
-                onClick={handleDelete}
-                danger
-              >
-                删除
+                修改
               </Button>
             </>
           );
         },
       },
     ]);
-  }, [setEditId, toggle, deleteLevel, form]);
+  }, [setEditId, toggle, form]);
 
   const handleSubmit = useCallback(async () => {
     const values = await form.validateFields();
     if (editId) {
-      await editLevel({
+      await editKey({
         ID: editId,
         ...values,
       });
     } else {
-      await submitLevel(values);
+      await submitKey(values);
     }
     fetchList();
-  }, [form, editId, fetchList, editLevel, submitLevel]);
+  }, [form, editId, fetchList, editKey, submitKey]);
 
   const handleCancel = useCallback(() => {
     setEditId('');
@@ -118,13 +95,8 @@ const SettingLevel: FC = ({}) => {
 
   return (
     <div>
-      <ProForm items={items} layout="inline" onFinish={fetchList}>
-        <Button type="primary" htmlType="submit">
-          查询
-        </Button>
-      </ProForm>
       <Button type="primary" onClick={toggle} style={{ margin: '12px 0' }}>
-        新增关卡
+        新增密钥
       </Button>
       <ProTable
         rowKey="ID"
@@ -141,7 +113,7 @@ const SettingLevel: FC = ({}) => {
         onOk={handleSubmit}
         confirmLoading={submitLoading || editLoading}
       >
-        <ProForm form={form} preserve={false} items={levelItems} />
+        <ProForm form={form} preserve={false} items={items} />
       </Modal>
     </div>
   );
