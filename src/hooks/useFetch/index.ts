@@ -58,7 +58,11 @@ function useFetch<ResultType = any>(
 
   const fetch = useCallback(
     (...args) => {
-      const { formatResult, onSuccess, onError } = optionsRef.current;
+      const {
+        formatResult = defaultOptions.formatResult,
+        onSuccess,
+        onError,
+      } = optionsRef.current;
       setLoading(true);
       return serviceFn<fetchServiceType, ResultType>(
         serviceRef.current,
@@ -67,7 +71,7 @@ function useFetch<ResultType = any>(
         .then(result => {
           const { code, Code } = result;
           if (code === 0 || Code === 0) {
-            const data = formatResult?.(result);
+            const data = formatResult(result);
             onSuccess?.(data);
             setState(data);
             return data;

@@ -19,6 +19,8 @@ const UserContent: FC<IUserContentProps> = ({
     formatResult,
   });
 
+  console.log(list, 'list');
+
   return (
     <ProTable
       align="center"

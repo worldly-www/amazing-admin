@@ -60,9 +60,9 @@ const RANK_COLUMNS = objectToArray(
 
 const REWARD_COLUMNS = objectToArray(
   {
-    WalletId: '钱包地址',
-    WeekNumber: '历史周数',
-    Rank: '奖励',
+    walletID: '钱包地址',
+    weekNumber: '历史周数',
+    giftNumber: '奖励',
   },
   {
     labelKey: 'dataIndex',
@@ -94,4 +94,11 @@ export const ACTION_OPTION = {
     service: '/GameUserScoreReport/GetCurrentUserWeekHistoryScoreGift',
     columns: REWARD_COLUMNS,
   },
+};
+
+export const ACTION_TEXT = {
+  [ACTION_TYPE.WEEK]: '历史周数',
+  [ACTION_TYPE.SCORE]: '历史积分',
+  [ACTION_TYPE.RANK]: '历史排名',
+  [ACTION_TYPE.REWARD]: '历史奖励',
 };

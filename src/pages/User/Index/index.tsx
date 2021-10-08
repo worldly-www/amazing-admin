@@ -3,7 +3,7 @@ import { Button, Modal } from 'antd';
 import ProTable from '@/components/ProTable';
 import { useFetch, useBoolean } from '@/hooks';
 import Content from './Content';
-import { columns, ACTION_TYPE, ACTION_OPTION } from './constant';
+import { columns, ACTION_TYPE, ACTION_OPTION, ACTION_TEXT } from './constant';
 
 const UserList: FC = ({}) => {
   const [state, setState] = useState({});
@@ -18,7 +18,12 @@ const UserList: FC = ({}) => {
             Key: { WalletId },
           } = record;
           const handleClick = (type: ACTION_TYPE) => {
-            const actionOption = ACTION_OPTION[type];
+            const actionOption = Object.assign(
+              {
+                type,
+              },
+              ACTION_OPTION[type],
+            );
             actionOption.service += '?strWallet=' + WalletId;
             if (ACTION_TYPE.WEEK === type) {
               actionOption.formatResult = ({ data }) =>
@@ -95,7 +100,7 @@ const UserList: FC = ({}) => {
         dataSource={list}
       />
       <Modal
-        title="历史周数"
+        title={ACTION_TEXT[state.type]}
         destroyOnClose
         visible={visible}
         onCancel={toggle}
